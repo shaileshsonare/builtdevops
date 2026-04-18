@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-hello-world
+  labels:
+    app: php-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: php-app
+  template:
+    metadata:
+      labels:
+        app: php-app
+    spec:
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames:
+        - "php-app"
+      containers:
+      # --- PHP-FPM CONTAINER ---
+      - name: php-fpm
+        image: php-hello-world:latest
+        imagePullPolicy: Never
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "64Mi"
+          limits:
+            cpu: "100m"
+            memory: "128Mi"
+        volumeMounts:
+        - name: php-volume
+          mountPath: /var/www/html
+
+      # --- NGINX CONTAINER ---
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: php-volume
+          mountPath: /var/www/html
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: nginx.conf
+      
+      volumes:
+      - name: php-volume
+        hostPath:
+          path: /home/shaileshsonare/Desktop/phpdocker
+      - name: nginx-config
+        hostPath:
+          path: /home/shaileshsonare/Desktop/phpdocker/nginx.conf
