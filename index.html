@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Docker & K8s - Node.js Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&family=Source+Sans+Pro:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --sidebar-bg: #f1f1f1;
+            --text: #212121;
+            --primary: #539E43; 
+            --border: #ddd;
+            --code-bg: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans Pro', 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        .sidebar {
+            height: 100%; width: 240px; position: fixed; z-index: 1; top: 0; left: 0;
+            background-color: var(--sidebar-bg); overflow-x: hidden; padding-top: 20px;
+            border-right: 1px solid var(--border);
+        }
+        .sidebar h2 { padding: 10px 20px; font-size: 1.2rem; color: #555; }
+        .sidebar a { padding: 8px 20px; text-decoration: none; font-size: 1.05rem; color: #000; display: block; transition: 0.2s; cursor: pointer; }
+        .sidebar a:hover { background-color: #ccc; }
+        .sidebar a.active { background-color: var(--primary) !important; color: white !important; font-weight: bold; }
+
+        .main { margin-left: 240px; padding: 30px 60px; max-width: 1100px; }
+        h1 { font-size: 2.5rem; margin-bottom: 20px; }
+        h2 { font-size: 1.8rem; margin: 30px 0 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        p { margin-bottom: 15px; font-size: 1.1rem; line-height: 1.6; }
+
+        .code-container { background-color: #e7e9eb; padding: 20px; border-radius: 5px; margin: 20px 0; position: relative; }
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; white-space: pre-wrap; word-wrap: break-word; }
+        .copy-btn {
+            position: absolute; top: 10px; right: 10px; background-color: #2196F3;
+            color: white; border: none; padding: 5px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem;
+        }
+        .copy-btn:hover { background-color: #0b7dda; }
+
+        .note { background-color: #ffffcc; border-left: 6px solid #ffeb3b; padding: 15px; margin: 20px 0; }
+        .explanation { background-color: #e3f2fd; border-left: 6px solid #2196F3; padding: 15px; margin: 20px 0; }
+        .analogy { background-color: #f1f8e9; border-left: 6px solid var(--primary); padding: 15px; margin: 20px 0; }
+
+        .btn-container { display: flex; justify-content: space-between; margin: 50px 0; }
+        .btn { background-color: var(--primary); color: white; padding: 10px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+
+        .step-tag { background: #2196F3; color: white; padding: 2px 10px; border-radius: 4px; font-size: 0.8rem; margin-bottom: 10px; display: inline-block; }
+
+        section { display: none; }
+        section.active { display: block; }
+
+        .flag { color: #d81b60; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Basics</h2>
+    <a onclick="showSec('home', this)" class="nav-link active">Introduction</a>
+    <a onclick="showSec('concepts', this)" class="nav-link">Core Concepts</a>
+    
+    <h2>Step-by-Step</h2>
+    <a onclick="showSec('step1', this)" class="nav-link">Step 1: Node App</a>
+    <a onclick="showSec('step2', this)" class="nav-link">Step 2: Package JSON</a>
+    <a onclick="showSec('step3', this)" class="nav-link">Step 3: Dockerfile</a>
+    <a onclick="showSec('step4', this)" class="nav-link">Step 4: Compose</a>
+    <a onclick="showSec('step5', this)" class="nav-link">Step 5: K8s Deploy</a>
+    
+    <h2>Verification</h2>
+    <a onclick="showSec('testing', this)" class="nav-link">How to Test</a>
+    <a onclick="showSec('scaling', this)" class="nav-link">Scaling & Flags</a>
+    <a onclick="showSec('control', this)" class="nav-link">Start & Stop</a>
+    <a onclick="showSec('trouble', this)" class="nav-link">Troubleshooting</a>
+</div>
+
+<div class="main">
+    
+    <section id="home" class="active">
+        <h1>Node.js Docker & K8s Tutorial</h1>
+        <p>In this guide, we will build a <b>High Performance Node.js API</b>. We will learn how to make it run anywhere and scale perfectly across a cloud cluster.</p>
+        <div class="analogy">
+            <b>Target:</b> Create an API that tracks how many times you visit, proving that your "Sticky Sessions" are working across 10 replicas!
+        </div>
+        <div class="btn-container">
+            <span></span>
+            <a onclick="showSec('concepts')" class="btn">Next: Concepts &raquo;</a>
+        </div>
+    </section>
+
+    <section id="concepts">
+        <h1>Core Concepts</h1>
+        <div class="analogy">
+            <b>🏠 The Analogy:</b> 
+            <br>• <b>NPM:</b> The supermarket where you get your tools.
+            <br>• <b>package.json:</b> Your shopping list.
+            <br>• <b>express-session:</b> The "Memory" of your server.
+        </div>
+        <div class="btn-container">
+            <a onclick="showSec('home')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('step1')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <section id="step1">
+        <span class="step-tag">Phase 1</span>
+        <h1>Step 1: Create the Node App</h1>
+        <p>Create a file named <b style="color:red">app.js</b>:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: app.js</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>const express = require('express');
+const session = require('express-session');
+const app = express();
+const os = require('os');
+
+app.use(session({
+    secret: 'cloud-secret',
+    resave: false,
+    saveUninitialized: true
+}));
+
+app.get('/hi', (req, res) => {
+    req.session.counter = (req.session.counter || 0) + 1;
+    res.send(`
+        &lt;h1&gt;Node.js Session Test&lt;/h1&gt;
+        &lt;p&gt;&lt;b&gt;Counter:&lt;/b&gt; ${req.session.counter}&lt;/p&gt;
+        &lt;p&gt;&lt;b&gt;Pod Name:&lt;/b&gt; ${os.hostname()}&lt;/p&gt;
+        &lt;p&gt;&lt;b&gt;Time:&lt;/b&gt; ${new Date().toLocaleString()}&lt;/p&gt;
+    `);
+});
+
+app.listen(3000, () => {
+    console.log('API listening on port 3000');
+});</code></pre>
+        </div>
+        <div class="btn-container">
+            <a onclick="showSec('concepts')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('step2')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <section id="step2">
+        <span class="step-tag">Phase 2</span>
+        <h1>Step 2: Create Package JSON</h1>
+        <p>Create a file named <b style="color:red">package.json</b>:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: package.json</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>{
+  "name": "node-hello-api",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": { "start": "node app.js" },
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.17.3"
+  }
+}</code></pre>
+        </div>
+        <div class="btn-container">
+            <a onclick="showSec('step1')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('step3')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <section id="step3">
+        <span class="step-tag">Phase 3</span>
+        <h1>Step 3: Create the Dockerfile</h1>
+        <p>Create a file named <b style="color:red">Dockerfile</b>:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: Dockerfile</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>FROM node:20-alpine # Use the official Node.js Alphine image (small and fast)
+WORKDIR /app # Define where our code will live inside the container
+COPY package*.json ./ # Copy the shopping list of libraries first
+RUN npm install # Install all the libraries our app needs
+COPY . . # Copy all our source code into the container
+EXPOSE 3000 # Tell Docker we will use port 3000 
+CMD ["npm", "start"] # The final command to run our app</code></pre>
+        </div>
+        <div class="btn-container">
+            <a onclick="showSec('step2')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('step4')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <section id="step4">
+        <span class="step-tag">Phase 4</span>
+        <h1>Step 4: Docker Compose</h1>
+        <p>Create a file named <b style="color:red">docker-compose.yaml</b>:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: docker-compose.yaml</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>services:
+  node-api:
+    build: . # Build the image from our local Dockerfile
+    ports:
+      - "3000:3000" # Map computer port 3000 to container port 3000
+    volumes:
+      - .:/app # Mirror our local folder into the container for live edits</code></pre>
+        </div>
+        <div class="btn-container">
+            <a onclick="showSec('step3')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('step5')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <section id="step5">
+        <span class="step-tag">Phase 5</span>
+        <h1>Step 5: Define Kubernetes Files</h1>
+        <p>Kubernetes needs 3 specialized blueprints to run your app professionally in the cloud.</p>
+        
+        <h2>A) Deployment</h2>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: deployment.yaml</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: node-api
+spec:
+  replicas: 2 # Start with 2 copies of your app
+  selector:
+    matchLabels:
+      app: node-api
+  template:
+    metadata:
+      labels:
+        app: node-api
+    spec:
+      containers:
+      - name: node-api
+        image: node-hello-api:latest # This is your custom Node image
+        imagePullPolicy: Never # Use the image already on this computer
+        ports:
+        - containerPort: 3000 # The app inside the container uses port 3000</code></pre>
+        </div>
+
+        <h2>B) Service</h2>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: service.yaml</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: node-service
+spec:
+  type: NodePort # Makes the app accessible to the outside world
+  sessionAffinity: ClientIP # Enable 'Sticky Sessions' so users stay on 1 pod
+  selector:
+    app: node-api # Connects this service to our deployment
+  ports:
+    - port: 3000
+      targetPort: 3000
+      nodePort: 30001 # Access the app in browser at localhost:30001</code></pre>
+        </div>
+
+        <h2>C) The HPA (The Auto-Scaler)</h2>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: hpa.yaml</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: node-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: node-api # Manage scaling for our node-api deployment
+  minReplicas: 2 # Floor: Never go below 2
+  maxReplicas: 10 # Ceiling: Never go above 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50 # Create more if CPU usage hits 50%</code></pre>
+        </div>
+
+        <h2>D) Apply all files</h2>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>kubectl apply -f .</code></pre>
+        </div>
+
+        <div class="btn-container">
+            <a onclick="showSec('step4')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('testing')" class="btn">How to Test &raquo;</a>
+        </div>
+    </section>
+
+    <section id="testing">
+        <h1>Testing your API</h1>
+        <p>Visit (Docker): <code>http://localhost:3000/hi</code></p>
+        <p>Visit (K8s): <code>http://localhost:30001/hi</code></p>
+        <div class="btn-container">
+            <a onclick="showSec('step5')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('scaling')" class="btn">Scaling & Flags &raquo;</a>
+        </div>
+    </section>
+
+    <section id="scaling">
+        <h1>Understanding Scaling & Flags</h1>
+
+        <h2>1. Docker Compose Scaling</h2>
+        <div class="code-container"><code>docker compose up -d <span class="flag">--scale</span> node-api=5</code></div>
+        <div class="explanation">
+            <b>The Flag:</b> <span class="flag">--scale</span>
+            <br>Tell Docker: "I want exactly <b>5 copies</b> of the node-api service running right now."
+        </div>
+
+        <h2>2. Kubernetes Auto-Scaling</h2>
+        <div class="code-container"><code>kubectl autoscale deployment node-api <span class="flag">--cpu-percent</span>=50 <span class="flag">--min</span>=2 <span class="flag">--max</span>=10</code></div>
+        
+        <div class="explanation">
+            <b>Breakdown of Flags:</b>
+            <ul>
+                <li><span class="flag">--cpu-percent=50</span> : The "Tiredness" limit. If a pod uses more than 50% CPU, Kubernetes creates a new copy!</li>
+                <li><span class="flag">--min=2</span> : The <b>Floor</b>. Never go below 2 copies (for safety).</li>
+                <li><span class="flag">--max=10</span> : The <b>Ceiling</b>. Don't go above 10 copies (to save money/memory).</li>
+            </ul>
+        </div>
+
+        <div class="btn-container">
+            <a onclick="showSec('testing')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('control')" class="btn">Control &raquo;</a>
+        </div>
+    </section>
+
+    <section id="control">
+        <h1>Start & Stop</h1>
+        <div class="code-container">
+            <p><b>Docker:</b> <code>docker compose up -d</code> / <code>docker compose down</code></p>
+            <p><b>K8s:</b> <code>kubectl apply -f .</code> / <code>kubectl delete -f .</code></p>
+        </div>
+        <div class="btn-container">
+            <a onclick="showSec('scaling')" class="btn">&laquo; Previous</a>
+            <a onclick="showSec('trouble')" class="btn">Troubleshooting &raquo;</a>
+        </div>
+    </section>
+
+    <section id="trouble">
+        <h1>Troubleshooting</h1>
+        <div class="note"><b>Q: Why is it showing "Cannot find module"?</b><br>A: Run <code>npm install</code> on your machine or inside the Dockerfile.</div>
+    </section>
+
+</div>
+
+<script>
+    function showSec(id, element) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        if (element) {
+            element.classList.add('active');
+        } else {
+            const link = document.querySelector(`.nav-link[onclick*="'${id}'"]`);
+            if (link) link.classList.add('active');
+        }
+        window.scrollTo(0, 0);
+    }
+    function copyCode(btn) {
+        const code = btn.nextElementSibling.innerText;
+        navigator.clipboard.writeText(code);
+        btn.innerText = "✓ Copied";
+        setTimeout(() => btn.innerText = "Copy", 2000);
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Docker & K8s - Step by Step Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600&family=Source+Sans+Pro:wght@400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --sidebar-bg: #f1f1f1;
+            --text: #212121;
+            --primary: #04AA6D; /* W3Schools Green */
+            --border: #ddd;
+            --code-bg: #f5f5f5;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Source Sans Pro', 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); overflow-x: hidden; }
+
+        /* Sidebar - W3Schools style */
+        .sidebar {
+            height: 100%;
+            width: 240px;
+            position: fixed;
+            z-index: 1;
+            top: 0; left: 0;
+            background-color: var(--sidebar-bg);
+            overflow-x: hidden;
+            padding-top: 20px;
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar h2 { padding: 10px 20px; font-size: 1.2rem; color: #555; }
+        .sidebar a {
+            padding: 8px 20px;
+            text-decoration: none;
+            font-size: 1.05rem;
+            color: #000;
+            display: block;
+            transition: 0.2s;
+        }
+        .sidebar a:hover { background-color: #ccc; }
+        .sidebar a.active { background-color: var(--primary); color: white; }
+
+        /* Main Content */
+        .main {
+            margin-left: 240px;
+            padding: 30px 60px;
+            max-width: 1100px;
+        }
+
+        h1 { font-size: 2.5rem; margin-bottom: 20px; }
+        h2 { font-size: 1.8rem; margin: 30px 0 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        p { margin-bottom: 15px; font-size: 1.1rem; line-height: 1.6; }
+
+        /* Code Block */
+        .code-container {
+            background-color: #e7e9eb;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            position: relative;
+        }
+        pre { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; white-space: pre-wrap; word-wrap: break-word; }
+        .copy-btn {
+            position: absolute;
+            top: 10px; right: 10px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .copy-btn:hover { background-color: #0b7dda; }
+
+        .note {
+            background-color: #ffffcc;
+            border-left: 6px solid #ffeb3b;
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        .analogy {
+            background-color: #e8f5e9;
+            border-left: 6px solid var(--primary);
+            padding: 15px;
+            margin: 20px 0;
+        }
+
+        /* Next/Prev buttons */
+        .btn-container { display: flex; justify-content: space-between; margin: 50px 0; }
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .step-tag {
+            background: #2196F3;
+            color: white;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        section { display: none; }
+        section.active { display: block; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>Basics</h2>
+    <a href="javascript:void(0)" onclick="showSec('home')" class="nav-link active">Introduction</a>
+    <a href="javascript:void(0)" onclick="showSec('concepts')" class="nav-link">Core Concepts</a>
+    
+    <h2>Step-by-Step</h2>
+    <a href="javascript:void(0)" onclick="showSec('step1')" class="nav-link">Step 1: Create PHP</a>
+    <a href="javascript:void(0)" onclick="showSec('step2')" class="nav-link">Step 2: Dockerfile</a>
+    <a href="javascript:void(0)" onclick="showSec('step3')" class="nav-link">Step 3: Nginx Config</a>
+    <a href="javascript:void(0)" onclick="showSec('step4')" class="nav-link">Step 4: Compose</a>
+    <a href="javascript:void(0)" onclick="showSec('step5')" class="nav-link">Step 5: K8s Deploy</a>
+    
+    <h2>Verification</h2>
+    <a href="javascript:void(0)" onclick="showSec('testing')" class="nav-link">How to Test</a>
+    <a href="javascript:void(0)" onclick="showSec('scaling')" class="nav-link">Scaling & HPA</a>
+    
+    <h2>Maintenance</h2>
+    <a href="javascript:void(0)" onclick="showSec('control')" class="nav-link">Start & Stop</a>
+    <a href="javascript:void(0)" onclick="showSec('trouble')" class="nav-link">Troubleshooting</a>
+</div>
+
+<div class="main">
+    
+    <!-- HOME -->
+    <section id="home" class="active">
+        <h1>Docker & Kubernetes Tutorial</h1>
+        <p>Welcome! In this tutorial, we will learn how to take a simple website and turn it into a high-performance, auto-scaling application using Docker and Kubernetes.</p>
+        
+        <div class="analogy">
+            <b>Target:</b> By the end of this guide, you will have 10 copies of your website running simultaneously, all sharing the same source code from your local computer!
+        </div>
+
+        <div class="mermaid">
+        graph LR
+            A[Computer] -->|Volume| B[Container 1]
+            A -->|Volume| C[Container 2]
+            A -->|Volume| D[Container 3]
+            E[User] --> F{Load Balancer}
+            F --> B & C & D
+        </div>
+        
+        <div class="btn-container">
+            <span></span>
+            <a href="javascript:void(0)" onclick="showSec('concepts')" class="btn">Next: Concepts &raquo;</a>
+        </div>
+    </section>
+
+    <!-- CONCEPTS -->
+    <section id="concepts">
+        <h1>Cloud Concepts</h1>
+        <h2>1. What is an Image?</h2>
+        <p>An **Image** is like a frozen snapshot of a computer. It contains the OS, the language (PHP), and your settings. It doesn't "run", it's just a file.</p>
+        
+        <h2>2. What is a Container?</h2>
+        <p>A **Container** is what you get when you start an Image. It is a living, breathing instance of your application. You can have many containers running from one single Image.</p>
+
+        <h2>3. What is a Volume?</h2>
+        <p>A **Volume** is a bridge. It connects a folder on your real computer to a folder inside the container. This lets you edit code on your desktop and see results in the container <b>instantly</b>.</p>
+
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('home')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('step1')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <!-- STEP 1 -->
+    <section id="step1">
+        <span class="step-tag">Phase 1</span>
+        <h1>Step 1: Create the PHP Script</h1>
+        <p>First, we create our website logic. We will add a "Session Counter" so we can see if our sticky sessions are working.</p>
+        <p>Create a file named <b style="color:red">index.php</b>:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: index.php</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>&lt;?php
+session_start();
+if (!isset($_SESSION['counter'])) {
+    $_SESSION['counter'] = 1;
+} else {
+    $_SESSION['counter']++;
+}
+echo "&lt;h1&gt;PHP Session Test&lt;/h1&gt;";
+echo "&lt;p&gt;Counter: " . $_SESSION['counter'] . "&lt;/p&gt;";
+echo "&lt;p&gt;Pod Name: " . gethostname() . "&lt;/p&gt;";
+?&gt;</code></pre>
+        </div>
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('concepts')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('step2')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <!-- STEP 2 -->
+    <section id="step2">
+        <span class="step-tag">Phase 2</span>
+        <h1>Step 2: Create the Dockerfile</h1>
+        <p>The Dockerfile is the "Blueprint" for our Image. We will use the PHP-FPM image because we want to use Nginx later.</p>
+        <p>Create a file named <b style="color:red">Dockerfile</b>:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: Dockerfile (No extension)</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>FROM php:8.2-fpm-alpine
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+WORKDIR /var/www/html</code></pre>
+        </div>
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('step1')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('step3')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <!-- STEP 3 -->
+    <section id="step3">
+        <span class="step-tag">Phase 3</span>
+        <h1>Step 3: Create Nginx Config</h1>
+        <p>Nginx is our web server. It needs to know that any request for <code>.php</code> files should be sent to the PHP service.</p>
+        <p>Create a file named <b style="color:red">nginx.conf</b>:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: nginx.conf</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>server {
+    listen 80;
+    root /var/www/html;
+    index index.php;
+
+    location ~ \.php$ {
+        fastcgi_pass php-app:9000;
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}</code></pre>
+        </div>
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('step2')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('step4')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <!-- STEP 4 -->
+    <section id="step4">
+        <span class="step-tag">Phase 4</span>
+        <h1>Step 4: Docker Compose & Scaling</h1>
+        <p>Now we bring them together. Create a file named <b style="color:red">docker-compose.yaml</b>:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: docker-compose.yaml</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>services:
+  php-app:
+    build: .
+    volumes:
+      - .:/var/www/html
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8081-8090:80"
+    volumes:
+      - .:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf</code></pre>
+        </div>
+        
+        <h2>How to Scale (Copies)</h2>
+        <p>To run 3 copies on your computer right now:</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">Run in Terminal:</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>docker compose up -d --scale php-app=3</code></pre>
+        </div>
+
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('step3')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('step5')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <!-- STEP 5 -->
+    <section id="step5">
+        <span class="step-tag">Phase 5</span>
+        <h1>Step 5: Define Kubernetes Files</h1>
+        <p>Kubernetes needs 3 specialized files to run your app professionally. We will create them one by one.</p>
+        
+        <h2>A) The Deployment (The Brain)</h2>
+        <p>This file tells Kubernetes to run 2 pods, each with an Nginx sidecar and PHP. It also maps your local folder.</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: k8s-deployment.yaml</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: php-hello-world
+spec:
+  replicas: 2 # Start with 2 copies of the app
+  selector:
+    matchLabels:
+      app: php-app
+  template:
+    metadata:
+      labels:
+        app: php-app
+    spec:
+      hostAliases:
+      - ip: "127.0.0.1"
+        hostnames: ["php-app"] # Network trick so Nginx finds PHP inside the Pod
+      containers:
+      - name: php-fpm
+        image: php-hello-world:latest
+        imagePullPolicy: Never # Use image built on our machine
+        volumeMounts:
+        - name: php-volume
+          mountPath: /var/www/html # Root folder for PHP code
+      - name: nginx
+        image: nginx:alpine
+        volumeMounts:
+        - name: php-volume
+          mountPath: /var/www/html # Root folder for HTML files
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d/default.conf
+          subPath: nginx.conf
+      volumes:
+      - name: php-volume
+        hostPath:
+          path: /home/shaileshsonare/Desktop/phpdocker # Maps your Desktop folder
+      - name: nginx-config
+        hostPath:
+          path: /home/shaileshsonare/Desktop/phpdocker/nginx.conf</code></pre>
+        </div>
+
+        <h2>B) The Service (The Doorway)</h2>
+        <p>This file creates a stable URL (port 30080) for you to access the website.</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: k8s-service.yaml</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>apiVersion: v1
+kind: Service
+metadata:
+  name: php-service
+spec:
+  type: NodePort # Makes the app accessible in browser
+  sessionAffinity: ClientIP # Enable 'Sticky Sessions' for visitors
+  selector:
+    app: php-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30080 # Access browser at localhost:30080</code></pre>
+        </div>
+
+        <h2>C) The HPA (The Auto-Scaler)</h2>
+        <p>This tells Kubernetes to automatically grow from 2 to 10 copies if the CPU gets busy.</p>
+        <div class="code-container">
+            <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: k8s-hpa.yaml</div>
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: php-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: php-hello-world # Monitor our PHP Deployment
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 50 # Scale up if CPU exceeds 50% utilization</code></pre>
+        </div>
+
+        <h2>D) Apply all files</h2>
+        <p>Once you have created all three files, run this in your terminal:</p>
+        <div class="code-container">
+            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+            <pre><code>kubectl apply -f k8s-deployment.yaml
+kubectl apply -f k8s-service.yaml
+kubectl apply -f k8s-hpa.yaml</code></pre>
+        </div>
+
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('step4')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('scaling')" class="btn">Next Step &raquo;</a>
+        </div>
+    </section>
+
+    <!-- TESTING -->
+    <section id="testing">
+        <h1>How to Test your Application</h1>
+        <p>After you have applied all your files, follow these steps to prove that your "Cloud App" is working!</p>
+
+        <h2>1. Test Docker Compose</h2>
+        <p>Open your browser and visit:</p>
+        <div class="code-container">
+            <pre><code>http://localhost:8081</code></pre>
+        </div>
+
+        <h2>2. Test Kubernetes</h2>
+        <p>Open your browser and visit:</p>
+        <div class="code-container">
+            <pre><code>http://localhost:30080</code></pre>
+        </div>
+
+        <h2>3. Test the "Shared Volume" (Live Sync)</h2>
+        <p>This is the coolest part! Try this:</p>
+        <ul>
+            <li>Keep your browser open.</li>
+            <li>On your desktop, open <b>index.php</b> in Notepad or VS Code.</li>
+            <li>Change the word <code>"PHP Session Test"</code> to <code>"HELLO STUDENTS"</code>.</li>
+            <li>Press <b>Save</b>.</li>
+            <li>Refresh your browser!</li>
+        </ul>
+        <p>The text changes instantly without you needing to restart any container.</p>
+
+        <h2>4. Verify Scaling</h2>
+        <p>To see how many copies are running, look at the "Pod Name" line. If you open the website from a different browser or private tab, you might see a different Pod name! You can also run:</p>
+        <div class="code-container">
+            <pre><code>kubectl get pods</code></pre>
+        </div>
+
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('step5')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('scaling')" class="btn">Next Step: Scaling &raquo;</a>
+        </div>
+    </section>
+
+    <!-- SCALING -->
+    <section id="scaling">
+        <h1>Automatic Scaling (HPA)</h1>
+        <p>The <b>HPA (Horizontal Pod Autoscaler)</b> is like a manager. It watches how tired the servers (Pods) are. If they use more than 50% CPU, it creates more copies automatically!</p>
+        
+        <h2>How to test it:</h2>
+        <p>1. Start watching the pods:</p>
+        <div class="code-container"><code>kubectl get pods -w</code></div>
+        
+        <p>2. Put load on the server:</p>
+        <div class="code-container"><code>while true; do wget -q -O- http://localhost:30080; done</code></div>
+        
+        <p>You will see K8s create up to 10 pods to handle this load!</p>
+
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('step5')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('trouble')" class="btn">Troubleshoot &raquo;</a>
+        </div>
+    </section>
+
+    <!-- START & STOP -->
+    <section id="control">
+        <h1>Start and Stop: Controlling your Gear</h1>
+        <p>Containers are like lightbulbs. You should turn them on when you need them and off when you are done to save your computer's memory.</p>
+
+        <h2>1. Docker Compose</h2>
+        <p><b>To Start:</b> Runs the containers in the background.</p>
+        <div class="code-container"><pre><code>docker compose up -d</code></pre></div>
+        
+        <p><b>To Stop:</b> Stops and removes the containers completely.</p>
+        <div class="code-container"><pre><code>docker compose down</code></pre></div>
+
+        <h2>2. Kubernetes (K8s)</h2>
+        <p><b>To Start:</b> Applies all your YAML files at once.</p>
+        <div class="code-container"><pre><code>kubectl apply -f .</code></pre></div>
+        
+        <p><b>To Stop:</b> Deletes everything defined in your YAML files.</p>
+        <div class="code-container"><pre><code>kubectl delete -f .</code></pre></div>
+
+        <div class="note">
+            <b>Pro Tip:</b> In the Kubernetes command, the dot (<code>.</code>) means "The current folder". Kubernetes will automatically find all <code>.yaml</code> files and apply or delete them for you!
+        </div>
+
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('scaling')" class="btn">&laquo; Previous</a>
+            <a href="javascript:void(0)" onclick="showSec('trouble')" class="btn">Troubleshooting &raquo;</a>
+        </div>
+    </section>
+
+    <!-- TROUBLE -->
+    <section id="trouble">
+        <h1>Troubleshooting & FAQs</h1>
+        
+        <div class="note" style="background:#ffd9d9; border-color:#ff4d4d">
+            <b>Error: Port already in use</b><br>
+            Close the app that is using port 80 or 8081, or change your config to use a different port like 8099.
+        </div>
+
+        <div class="note" style="background:#d9f0ff; border-color:#2196F3">
+            <b>Q: Why does the Pod Name not change?</b><br>
+            Because we enabled <b>Session Affinity</b>. This "sticks" a user to one pod so their Login Session stays valid.
+        </div>
+
+        <div class="note" style="background:#e7f9eb; border-color:#04AA6D">
+            <b>Q: Is my code saved in the Image?</b><br>
+            No, we used a <b>Volume</b>. This means the container lives empty and "borrows" the files from your Desktop folder while it runs.
+        </div>
+
+        <div class="btn-container">
+            <a href="javascript:void(0)" onclick="showSec('scaling')" class="btn">&laquo; Previous</a>
+            <span></span>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
+    function showSec(id) {
+        document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        event.target.classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function copyCode(btn) {
+        const code = btn.nextElementSibling.innerText;
+        navigator.clipboard.writeText(code);
+        btn.innerText = "✓ Copied";
+        setTimeout(() => btn.innerText = "Copy", 2000);
+    }
+</script>
+</body>
+</html>
