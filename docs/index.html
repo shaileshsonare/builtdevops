@@ -175,13 +175,13 @@ app.listen(3000, () => {
         <div class="code-container">
             <div style="font-size:0.8rem; color:#666; margin-bottom:5px;">File Name: Dockerfile</div>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-            <pre><code>FROM node:20-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm install
-COPY . .
-EXPOSE 3000
-CMD ["npm", "start"]</code></pre>
+            <pre><code>FROM node:20-alpine # Use the official Node.js Alphine image (small and fast)
+WORKDIR /app # Define where our code will live inside the container
+COPY package*.json ./ # Copy the shopping list of libraries first
+RUN npm install # Install all the libraries our app needs
+COPY . . # Copy all our source code into the container
+EXPOSE 3000 # Tell Docker we will use port 3000 
+CMD ["npm", "start"] # The final command to run our app</code></pre>
         </div>
         <div class="btn-container">
             <a onclick="showSec('step2')" class="btn">&laquo; Previous</a>
@@ -198,11 +198,11 @@ CMD ["npm", "start"]</code></pre>
             <button class="copy-btn" onclick="copyCode(this)">Copy</button>
             <pre><code>services:
   node-api:
-    build: .
+    build: . # Build the image from our local Dockerfile
     ports:
-      - "3000:3000"
+      - "3000:3000" # Map computer port 3000 to container port 3000
     volumes:
-      - .:/app</code></pre>
+      - .:/app # Mirror our local folder into the container for live edits</code></pre>
         </div>
         <div class="btn-container">
             <a onclick="showSec('step3')" class="btn">&laquo; Previous</a>
